@@ -1,2 +1,2 @@
 # Hack2019
-U of T hack
+U of T hack Team Project
