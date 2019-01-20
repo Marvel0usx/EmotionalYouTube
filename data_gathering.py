@@ -5,6 +5,7 @@ import os
 import time
 import logging
 import datetime
+import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.touch_actions import TouchActions
@@ -27,37 +28,27 @@ APIKEY = os.environ['APIKEY']
 ################
 
 logging.basicConfig(filename='spyder.log', level=logging.DEBUG)
-youtube_driver = webdriver.Chrome(r'E:\Utilities\chromedriver.exe')
-youtube_driver.set_page_load_timeout(30)
 
 
-def get(video_id: str):
+def get(driver, video_id: str):
     """Function to send GET with limit on attempts of a given URL
     and return the soup object
     """
 
     url = 'https://www.youtube.com/watch?v={0}'.format(video_id)
 
+    print(url)
+
     # catch error when parsing the website
     try:
-        youtube_driver.get(url)
+
+        driver.get(url)
         time.sleep(LOADING_PAUSE_TIME)
 
-        # scroll down the browser to load <comments number>
-        TouchActions(youtube_driver).scroll(0, Y_SCROLL).perform()
-        time.sleep(SCROLL_PAUSE_TIME)
+        scroll_down(driver, Y_SCROLL, 1)
+        soup = scroll_down(driver, Y_SCROLL * 10, PAGE_OF_COMMENT)
 
-        # repeating scroll down the window until all comments are captured
-        for _ in range(0, PAGE_OF_COMMENT):
-            TouchActions(youtube_driver).scroll(0, Y_SCROLL * 10).perform()
-            time.sleep(SCROLL_PAUSE_TIME)
-
-        soup = BeautifulSoup(youtube_driver.page_source, features='html5lib')
-
-        # # loading the web page
-        # time.sleep(LOADING_PAUSE_TIME)
-
-        youtube_driver.close()
+        driver.close()
 
         return soup
 
@@ -67,6 +58,33 @@ def get(video_id: str):
         return None
 
 
+def scroll_down(driver, y_value=None, times=None):
+    """"Procedure to scroll down a web page for n times or
+    scroll it till its end if <times> is undefined
+    """
+
+    if y_value:
+        for _ in range(0, times):
+            # scroll down the browser n times to load <comments number>
+            TouchActions(driver).scroll(0, y_value).perform()
+            time.sleep(SCROLL_PAUSE_TIME)
+
+        return BeautifulSoup(driver.page_source, features='html5lib')
+
+    else:
+        # repeating scroll down the window until no more comments are loaded
+        soup = BeautifulSoup(driver.page_source, features='html5lib')
+
+        while True:
+            all_videos = soup.find_all('a', class_='yt-simple-endpoint style-scope ytd-grid-video-renderer')
+            TouchActions(driver).scroll(0, Y_SCROLL * 10).perform()
+            time.sleep(SCROLL_PAUSE_TIME)
+            new_videos = soup.find_all('a', class_='yt-simple-endpoint style-scope ytd-grid-video-renderer')
+
+            if new_videos == all_videos:
+                return new_videos
+
+
 def tidy_data(video_id: str, soup):
     """Function to split and categorize raw data from HTTP response
     and package all related information into a list
@@ -74,15 +92,6 @@ def tidy_data(video_id: str, soup):
 
     # find video name
     name = soup.find('yt-formatted-string', class_='style-scope ytd-video-primary-info-renderer').string
-
-    # find date of publish
-    date = soup.find('span', class_='date style-scope ytd-video-secondary-info-renderer').string
-    tmp = re.search(r'([A-Z][a-z]{2,3})\s(\d+),\s(\d+)', date)
-    if not tmp:
-        tmp = re.search(r'(\d+)\w(\d+)\w(\d+)', date).groups()
-        date = datetime.date(int(tmp[0]), int(tmp[1]), int(tmp[2]))
-    else:
-        date = datetime.date(interpret_published_date(tmp[1]), int(tmp[2]), int(tmp[3]))
 
     # find likes
     likes_raw = soup.find_all('yt-formatted-string', class_='style-scope ytd-toggle-button-renderer style-text')
@@ -114,11 +123,26 @@ def tidy_data(video_id: str, soup):
         text = comment.string
         divide_pattern = re.compile(r'\b\w+\b')
         word_list = re.findall(divide_pattern, text)
-        tidy_comment += [*word_list]
+        tidy_comment += [word.lower() for word in word_list]
+
+    date = find_published_date(soup)
 
     single_video_data = [video_id, name, date, view, like, no_comments, tidy_comment]
 
     return single_video_data
+
+
+def find_published_date(soup):
+    # find date of publish
+    date = soup.find('span', class_='date style-scope ytd-video-secondary-info-renderer').string
+    tmp = re.search(r'([A-Z][a-z]{2,3})\s(\d+),\s(\d+)', date)
+    if not tmp:
+        tmp = re.search(r'(\d+)\w(\d+)\w(\d+)', date).groups()
+        date = datetime.date(int(tmp[0]), int(tmp[1]), int(tmp[2]))
+    else:
+        date = datetime.date(interpret_published_date(tmp[1]), int(tmp[2]), int(tmp[3]))
+
+    return date
 
 
 def interpret_published_date(date_raw: str):
@@ -130,24 +154,57 @@ def interpret_published_date(date_raw: str):
             'Nov': 11, 'Dec': 12}[date_raw]
 
 
-def get_all_ids(channel_url: str):
+def get_all_ids(driver, channel_url: str):
     """"Function to fetch all url, title, and published date of a
     given Youtube channel.
     """
+    print(channel_url)
 
-    if not re.search('www.youtube.com/channel/\w+', channel_url):
-        return 1
-    elif channel_url[-1] != '/':
+    if channel_url[-7:] != '/videos':
         channel_url += '/videos'
-    else:
-        channel_url += 'videos'
+
+    # collecting all videos in video section
+    try:
+        driver.get(channel_url)
+        soup = scroll_down(driver)
+    except Exception:
+        logging.debug('[Error] failed to extract {0}'.format(channel_url))
+        return None
+
+    ids = []
+    for video in soup:
+        # search for id of which behind 'v='
+        res = re.search(r'(?=v=(\w+))', video.herf)
+        ids.append(res.groups()[0])
+
+    return ids
 
 
+def get_all_publish_dates_in_channel(ids):
+    """"Function to find all published date of videos in a channel
+    """
+
+    urls = ['https://www.youtube.com/watch?v={0}'.format(video_id) for
+            video_id in ids]
+
+    all_published_date = []
+    for url in urls:
+        soup = BeautifulSoup(requests.get(url).text)
+        date_tag = soup.find('strong', class_='watch-time-text')
+
+        date = re.search(r'([A-Z][a-z]{2,3})\s(\d+),\s(\d+)', date_tag.string).groups()
+        all_published_date.append(datetime.date(int(date[1]), int(date[2]), int(date[3])))
+
+    return all_published_date
 
 
 if __name__ == '__main__':
     video_id = 'YTxYykhQZbI'
-    response = get(video_id)
-    if response:
-        data = tidy_data(video_id, response)
-        print(data)
+    youtube_driver = webdriver.Chrome(r'E:\Utilities\chromedriver.exe')
+    youtube_driver.set_page_load_timeout(30)
+    # response = get(youtube_driver, video_id)
+    # if response:
+    #     data = tidy_data(video_id, response)
+    #     print(data)
+    ids = get_all_ids(youtube_driver, 'https://www.youtube.com/channel/UCHRUAMAzVUS_Szvxn55GXaQ/videos')
+    print(ids)
