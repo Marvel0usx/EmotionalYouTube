@@ -37,8 +37,6 @@ def get(driver, video_id: str):
 
     url = 'https://www.youtube.com/watch?v={0}'.format(video_id)
 
-    print(url)
-
     # catch error when parsing the website
     try:
 
@@ -76,12 +74,16 @@ def scroll_down(driver, y_value=None, times=None):
         soup = BeautifulSoup(driver.page_source, features='html5lib')
 
         while True:
-            all_videos = soup.find_all('a', class_='yt-simple-endpoint style-scope ytd-grid-video-renderer')
+            all_videos = soup.find_all('a', id='video-title',
+                                       class_='yt-simple-endpoint style-scope ytd-grid-video-renderer')
             TouchActions(driver).scroll(0, Y_SCROLL * 10).perform()
             time.sleep(SCROLL_PAUSE_TIME)
-            new_videos = soup.find_all('a', class_='yt-simple-endpoint style-scope ytd-grid-video-renderer')
+            soup = BeautifulSoup(driver.page_source, features='html5lib')
+            new_videos = soup.find_all('a', id='video-title',
+                                       class_='yt-simple-endpoint style-scope ytd-grid-video-renderer')
 
             if new_videos == all_videos:
+                driver.close()
                 return new_videos
 
 
@@ -140,7 +142,7 @@ def find_published_date(soup):
         tmp = re.search(r'(\d+)\w(\d+)\w(\d+)', date).groups()
         date = datetime.date(int(tmp[0]), int(tmp[1]), int(tmp[2]))
     else:
-        date = datetime.date(interpret_published_date(tmp[1]), int(tmp[2]), int(tmp[3]))
+        date = datetime.date(interpret_published_date(tmp[0]), int(tmp[1]), int(tmp[2]))
 
     return date
 
@@ -150,7 +152,7 @@ def interpret_published_date(date_raw: str):
     """
 
     return {'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5,
-            'June': 6, 'July': 7, 'Aug': 8, 'Sept': 9, 'Oct': 10,
+            'Jun': 6, 'Jul': 7, 'Aug': 8, 'Sep': 9, 'Oct': 10,
             'Nov': 11, 'Dec': 12}[date_raw]
 
 
@@ -158,10 +160,6 @@ def get_all_ids(driver, channel_url: str):
     """"Function to fetch all url, title, and published date of a
     given Youtube channel.
     """
-    print(channel_url)
-
-    if channel_url[-7:] != '/videos':
-        channel_url += '/videos'
 
     # collecting all videos in video section
     try:
@@ -174,7 +172,7 @@ def get_all_ids(driver, channel_url: str):
     ids = []
     for video in soup:
         # search for id of which behind 'v='
-        res = re.search(r'(?=v=(\w+))', video.herf)
+        res = re.search(r'(?=v=([A-Za-z0-9-_]+))', video.attrs['href'])
         ids.append(res.groups()[0])
 
     return ids
@@ -189,11 +187,11 @@ def get_all_publish_dates_in_channel(ids):
 
     all_published_date = []
     for url in urls:
-        soup = BeautifulSoup(requests.get(url).text)
-        date_tag = soup.find('strong', class_='watch-time-text')
+        soup = BeautifulSoup(requests.get(url).text, features='html5lib')
+        date_tag = soup.find_all('strong', class_='watch-time-text')
 
-        date = re.search(r'([A-Z][a-z]{2,3})\s(\d+),\s(\d+)', date_tag.string).groups()
-        all_published_date.append(datetime.date(int(date[1]), int(date[2]), int(date[3])))
+        date = re.search(r'([A-Z][a-z]{2,3})\s(\d+),\s(\d+)', date_tag[0].string).groups()
+        all_published_date.append(datetime.date(int(date[2]), interpret_published_date(date[0]), int(date[1])))
 
     return all_published_date
 
@@ -202,9 +200,8 @@ if __name__ == '__main__':
     video_id = 'YTxYykhQZbI'
     youtube_driver = webdriver.Chrome(r'E:\Utilities\chromedriver.exe')
     youtube_driver.set_page_load_timeout(30)
-    # response = get(youtube_driver, video_id)
-    # if response:
-    #     data = tidy_data(video_id, response)
-    #     print(data)
+    response = get(youtube_driver, video_id)
+    if response:
+        data = tidy_data(video_id, response)
+        print(data)
     ids = get_all_ids(youtube_driver, 'https://www.youtube.com/channel/UCHRUAMAzVUS_Szvxn55GXaQ/videos')
-    print(ids)
