@@ -17,7 +17,7 @@ class Video:
     """Class to store all related information of a YouTube video.
 
     === Attributes ===
-    id_         : The unique YouTube id of the video;
+    _id         : The unique YouTube id of the video;
     title       : String of the title of the video;
     channel_id  : The unique YouTube id of the channel;
     num_comment : number of comments below this video;
@@ -25,11 +25,11 @@ class Video:
     lang        : language of the majority of comments
     """
 
-    _id: str
-    title: str
-    channel_id: str
+    _id        : str
+    lang       : str
+    title      : str
+    channel_id : str
     num_comment: int
-    lang: str
 
     def __init__(self, **kwargs):
         valid_keys = ["_id", "title", "channel_id", "num_comment", "comments", "lang"]
@@ -61,13 +61,13 @@ class DataFetchingError(Exception):
     """Exception class for 401-404 errors
 
     === Attributes ===
-    id_: string representation of the id of YouTube video;
+    _id: string representation of the id of YouTube video;
     """
 
-    id_: str
+    _id: str
 
     def __init__(self, _id):
         self._id = _id
 
     def __str__(self) -> str:
-        return f"Unable to fetch data from given id {self._id}"
+        return f"Error in fetching data from video id {self._id}"
