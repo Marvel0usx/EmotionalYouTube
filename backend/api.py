@@ -13,7 +13,8 @@ any changes, should conform to the open source licence as provided.
 import re
 import os
 import langdetect
-from typing import Optional, Union, List
+from wordcloud import WordCloud
+from typing import Optional, Union, List, Tuple
 from data import Video, DataFetchingError, UrlError
 from googleapiclient.discovery import build, Resource
 from googleapiclient.errors import HttpError, UnknownApiNameOrVersion
@@ -24,12 +25,20 @@ from google.cloud.language import LanguageServiceClient
 # YouTube Data API offsets
 YOUTUBE_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
+MAX_NUMBER_COMMENTS = 10
+NUM_RESULTS_PER_REQUEST = 1
 DEVELOPER_KEY = os.environ["GCP_APIKEY_EmotionalYouTube"]
 GOOGLE_APPLICATION_CREDENTIALS = os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
 
-# Constants
-MAX_NUMBER_COMMENTS = 10
-NUM_RESULTS_PER_REQUEST = 1
+# Sentiment analysis mark scale and magnitude scale
+SCORE_SCALE = [-0.5, -0.3, -0.1, 0.1, 0.3, 0.5]
+
+# Wordcloud generation constants
+EN_FONT = "CODE Light.otf"
+CH_FONT = "STKAITI.TTF"
+PATH_TO_IMG = r"..\dat\img\{}.png"
+PATH_TO_STOPWORDS = r"..\dat\{}_stopwords.txt"
+PATH_TO_FONTS = r"..\dat\{}"
 
 
 def init_service() -> Optional[Resource]:
@@ -173,10 +182,99 @@ def extract_adjective(client: LanguageServiceClient, comments: List[str]) -> str
     return adj_list
 
 
+# TODO(harry) update api call
+def sentiment_analysis(client: LanguageServiceClient, text: str) -> Tuple[str, str]:
+    """detects sentiment in the text."""
+    length = text.count(" ") + 1
+
+    # instantiates a plain text document
+    document = types.Document(
+        content=text,
+        type=enums.Document.Type.PLAIN_TEXT)
+
+    # detects sentiment in the document
+    sentiment = client.analyze_sentiment(document).document_sentiment
+    if not sentiment:
+        return "", ""
+    else:
+        score = sentiment.score
+        magnitude = sentiment.magnitude
+
+        saturation = magnitude / length > 0.1
+
+        if score <= SCORE_SCALE[0]:
+            return "Audiences have apparently negative reviews", "&#x1f620"
+        elif SCORE_SCALE[0] < score <= SCORE_SCALE[1]:
+            return "The reviews are somewhat negative", "&#x2639"
+        elif SCORE_SCALE[1] < score < SCORE_SCALE[2]:
+            return "The reviews are slightly negative", "&#x1f641"
+        elif SCORE_SCALE[2] <= score <= SCORE_SCALE[3]:
+            if saturation:
+                return "Audiences have mixed reviews", "&#x1f928"
+            else:
+                return "Audiences are neutral", "&#x1f636"
+        elif SCORE_SCALE[3] < score <= SCORE_SCALE[4]:
+            return "Reviews are pretty positive~", "&#128578"
+        else:
+            return "Reviews are complimenting!", "&#x1f604"
+
+def generate_word_cloud(filename: str, text: str, lang: str) -> str:
+    """Function to generate word cloud and returns the path to the image.
+    """
+    # extend to file file path
+    this_path = os.path.abspath(os.path.dirname(__file__))
+
+    stopwords_file = os.path.join(this_path, PATH_TO_STOPWORDS.format(rf"{['en', 'zh-cn'][lang == 'zh-cn']}"))
+    file_out_path = os.path.join(this_path, PATH_TO_IMG.format(filename))
+    # bg_image_path = os.path.join(this_path, r"..\dat\wcloud_bg.jpg")
+
+    if lang == "zh-cn":
+        font_path = os.path.join(this_path, PATH_TO_FONTS.format(CH_FONT))
+    else:
+        font_path = os.path.join(this_path, PATH_TO_FONTS.format(EN_FONT))
+
+    # background_image = plt.imread(bg_image_path)
+    # fetch all stopwords
+    stopwords = set("")
+    if lang == "en":
+        with open(stopwords_file) as file:
+            words = [word.rstrip() for word in file.readlines()]
+        stopwords.update(words)
+
+    wc = WordCloud(
+        background_color=None,
+        mode            ="RGBA",
+        font_path       =font_path,
+        max_words       =2000,
+        width           =1000,
+        height          =800,
+        max_font_size   =150,
+        random_state    =10,
+        stopwords       =stopwords
+    )
+
+    wc.generate_from_text(text)
+
+    # process_word = WordCloud.process_text(wc, text)
+    # sorted_keywords = sorted(process_word.items(), key=lambda e: e[1], reverse=True)
+    # print(sorted_keywords[:50])
+    # img_colors = ImageColorGenerator(background_image)
+    # wc.recolor(color_func=img_colors)
+
+    wc.to_file(file_out_path)
+
+    return "%s.png" % filename
+
+
+# TODO(harry) implement this function
+def get_report():
+    pass
+
+
 if __name__ == "__main__":
     # youtube = init_service()
     # v = video_data_aggregate(youtube, "2DTNgvcRFE8")
     # print(v.comments)
     nlp = language.LanguageServiceClient()
-    t = extract_adjective(nlp, ["职责是一扇窗户，他带给人们在自由"])
-    print(t)
+    t = extract_adjective(nlp, ["I am happy!"])
+    print(sentiment_analysis(nlp, t))
