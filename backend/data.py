@@ -10,29 +10,32 @@ any changes, should conform to the open source licence as provided.
 
 """
 
-__author__ = 'Jan(Zhan) Lu and Haoyan Wang'
+from typing import List
 
 
 class Video:
     """Class to store all related information of a YouTube video.
 
     === Attributes ===
-    _id         : The unique YouTube id of the video;
-    title       : String of the title of the video;
-    channel_id  : The unique YouTube id of the channel;
-    num_comment : number of comments below this video;
-    comments    : comments of this video;
-    lang        : language of the majority of comments
+    _id          : the unique YouTube id of the video;
+    title        : string of the title of the video;
+    channel_id   : the unique YouTube id of the channel;
+    channel_title: title of this video's channel;
+    tags         : list of tags of this video;
+    comments     : comments of this video;
+    lang         : language of the majority of comments
     """
 
     _id        : str
     lang       : str
+    tags       : List[str]
     title      : str
     channel_id : str
-    num_comment: int
+    channel_title: str
+    comments   : List[str]
 
     def __init__(self, **kwargs):
-        valid_keys = ["_id", "title", "channel_id", "num_comment", "comments", "lang"]
+        valid_keys = ["id_", "title", "channel_id", "channel_title", "tags", "comments", "lang"]
 
         for key in valid_keys:
             self.__dict__[key] = kwargs.get(key)
@@ -54,7 +57,7 @@ class UrlError(Exception):
         self.url = url
 
     def __str__(self) -> str:
-        return f'URL Error on {self.url}'
+        return f"URL Error on {self.url}"
 
 
 class DataFetchingError(Exception):

@@ -10,19 +10,18 @@ any changes, should conform to the open source licence as provided.
 
 """
 
-# use packages
 import os
 from backend import utils
 from typing import Tuple, Optional
-from apiclient.discovery import build
+from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from backend.data import UrlError
 
 # the service name has to be correspond to the service name in the documentation
 # and the service name for YouTube Data API is youtube.googleapis.com
-YOUTUBE_SERVICE_NAME = 'youtube'
-YOUTUBE_API_VERSION = 'v3'
-API_KEY = os.environ.get('apikey')
+YOUTUBE_SERVICE_NAME = "youtube"
+YOUTUBE_API_VERSION = "v3"
+API_KEY = os.environ.get("apikey")
 MAX_RESULT = 50
 
 # initialize API client
@@ -49,7 +48,7 @@ def main(url: str) -> Optional[Tuple]:
         return utils.analysis(entity)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # start testing below
 
-    print(main('https://www.youtube.com/watch?v=6ajTcwJBbw4'))
+    print(main("https://www.youtube.com/watch?v=6ajTcwJBbw4"))
