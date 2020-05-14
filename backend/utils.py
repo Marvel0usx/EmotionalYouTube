@@ -14,28 +14,7 @@ SCORE_SCALE = [-0.5, -0.3, -0.1, 0.1, 0.3, 0.5]
 
 
 # TODO(harry) update api call
-def extract_all_descriptive_words(text) -> str:
-    """Detects syntax in the text and pull out all adjectives.
-    """
-    client = language.LanguageServiceClient()
 
-    if isinstance(text, six.binary_type):
-        text = text.decode('utf-8')
-
-    # Instantiates a plain text document.
-    document = types.Document(
-        content=text,
-        type=enums.Document.Type.PLAIN_TEXT)
-
-    # Detects syntax in the document.
-    tokens = client.analyze_syntax(document).tokens
-
-    res = ''
-    for token in tokens:
-        part_of_speech_tag = enums.PartOfSpeech.Tag(token.part_of_speech.tag)
-        if part_of_speech_tag.name == 'ADJ':
-            res += f'{token.text.content} '
-    return res
 
 
 # TODO(harry) update api call
@@ -124,10 +103,7 @@ def generate_word_cloud(filename: str, text: str, lang: str) -> str:
     return "%s.png" % filename
 
 
-def detect_lang(video: Video) -> None:
-    """Helper function to detect the language of the majority oof the comments.
-    """
-    video.lang = langdetect.detect(video.title)
+
 
 
 def analysis(video) -> tuple:

@@ -12,15 +12,20 @@ any changes, should conform to the open source licence as provided.
 
 import re
 import os
+import langdetect
 from typing import Optional, Union, List
 from data import Video, DataFetchingError, UrlError
 from googleapiclient.discovery import build, Resource
 from googleapiclient.errors import HttpError, UnknownApiNameOrVersion
+from google.cloud import language
+from google.cloud.language import enums, types
+from google.cloud.language import LanguageServiceClient
 
 # YouTube Data API offsets
 YOUTUBE_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
 DEVELOPER_KEY = os.environ["GCP_APIKEY_EmotionalYouTube"]
+GOOGLE_APPLICATION_CREDENTIALS = os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
 
 # Constants
 MAX_NUMBER_COMMENTS = 10
@@ -107,7 +112,7 @@ def video_meta_by_id(client: Resource, **kwargs) -> List[Union[List[str], str]]:
     if not response["items"]:
         raise DataFetchingError(kwargs["id"])
 
-    # information about the video
+    # meta data
     title = response["items"][0]["snippet"]["title"]
     channel_id = response["items"][0]["snippet"]["channelId"]
     channel_title = response["items"][0]["snippet"]["channelTitle"]
@@ -119,19 +124,59 @@ def video_data_aggregate(client: Resource, video_id) -> Video:
     """Function to gather information about the video and encapsulate to Video object.
     """
     try:
+        # gather meta data
         meta = video_meta_by_id(client, part="snippet", id=video_id)
         comments = get_comments(client, part="snippet", videoId=video_id, maxResults=NUM_RESULTS_PER_REQUEST,
                                 pageToken="", order="relevance", textFormat="plainText")
-        params = ["id_", "title", "channel_id", "channel_title", "tags", "comments"]
-        video_meta = [video_id] + meta + [comments]
+        # guess language for the majority of the comments
+        lang = detect_lang(comments)
+        # encapsulate
+        params = ["id_", "title", "channel_id", "channel_title", "tags", "comments", "lang"]
+        video_meta = [video_id] + meta + [comments] + [lang]
         return Video(**dict(zip(params, video_meta)))
     except DataFetchingError as e:
         print(e)
         # TODO(harry) add logging module
 
 
-if __name__ == "__main__":
-    youtube = init_service()
-    v = video_data_aggregate(youtube, "2DTNgvcRFE8")
-    print(v.comments)
+def detect_lang(comments: List[str]) -> str:
+    """Helper function to detect the language of the comments.
+    """
+    text = "".join(comments)
+    lang = langdetect.detect(text)
+    return lang
 
+
+def extract_adjective(client: LanguageServiceClient, comments: List[str]) -> str:
+    """Function all to NLP to pull out all adjectives from the text.
+    """
+    text = "".join(comments)
+    # if isinstance(text, six.binary_type):
+    #     text = text.encode("utf-8")
+
+    # instantiates a plain text document.
+    document = types.Document(
+        content=text.encode("utf-8"),
+        type=enums.Document.Type.PLAIN_TEXT
+    )
+
+    # decompose the text to tokens
+    tokens = client.analyze_syntax(document).tokens
+
+    # results are store as list of tokens
+    adj_list = u""
+    for token in tokens:
+        # append all adjectives to result
+        part_of_speech_tag = enums.PartOfSpeech.Tag(token.part_of_speech.tag)
+        if part_of_speech_tag.name == "ADJ":
+            adj_list += f"{token.text.content} "
+    return adj_list
+
+
+if __name__ == "__main__":
+    # youtube = init_service()
+    # v = video_data_aggregate(youtube, "2DTNgvcRFE8")
+    # print(v.comments)
+    nlp = language.LanguageServiceClient()
+    t = extract_adjective(nlp, ["职责是一扇窗户，他带给人们在自由"])
+    print(t)
