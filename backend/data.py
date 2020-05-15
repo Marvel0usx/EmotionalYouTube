@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-EmotionalYouTube Project Datatypes
+Emotional-YouTube Project Datatypes
 Jan(Zhan) Lu and Haoyan Wang, Winter 2020
 
 This code is provided for non-commercial and study purpose.
@@ -35,7 +35,7 @@ class Video:
     comments   : List[str]
 
     def __init__(self, **kwargs):
-        valid_keys = ["id_", "title", "channel_id", "channel_title", "tags", "comments", "lang"]
+        valid_keys = ["_id", "title", "channel_id", "channel_title", "tags", "comments", "lang"]
 
         for key in valid_keys:
             self.__dict__[key] = kwargs.get(key)
@@ -43,6 +43,33 @@ class Video:
     def __repr__(self) -> str:
         return self.title
 
+    def get_id(self) -> str:
+        return self._id
+
+
+class Report:
+    """Report contains the metadata of the video being analyzed and the results
+    carried out by the analysis function.
+
+    === Attributes ===
+    _id: the video id that this report corresponds to;
+    attitude: the attitude of viewers;
+    emoji: emoji repr of the attitude;
+    wcloud: path to where the image of word-cloud is stored.
+    """
+
+    _id: str
+    attitude: str
+    emoji: str
+    wcloud: str
+
+    def __init__(self, **kwargs):
+        for k, v in kwargs.items():
+            if k in ["_id", "attitude", "emoji", "wcloud"]:
+                self.__dict__[k] = v
+
+    def __str__(self) -> str:
+        return f"Video(id: {self._id}) received {self.attitude}, which is {self.emoji}."
 
 class UrlError(Exception):
     """Exception class for URL error
