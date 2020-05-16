@@ -10,26 +10,22 @@ any changes, should conform to the open source licence as provided.
 
 """
 
-from typing import Optional
+from typing import Optional, Tuple
+from data import Video, Report
 from utils import translate_url_to_id, video_data_aggregate, get_report
 
 
-def main(url: str) -> Optional[int]:
+def main(video_id: str) -> Tuple[Optional[Video], Optional[Report]]:
     """Main interface for backend, called by flask. It returns the
     result of sentiment analysis and the filename of the word cloud
     picture.
     """
-    video_id = translate_url_to_id(url)
-    if not video_id:
-        return None
+    video = video_data_aggregate(video_id)
+    if not video:
+        return None, None
     else:
-        video = video_data_aggregate(video_id)
-        if not video:
-            return None
-        else:
-            report = get_report(video)   
-    print(report)
-    return 0
+        report = get_report(video)
+    return video, report
 
 
 if __name__ == "__main__":

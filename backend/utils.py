@@ -65,6 +65,7 @@ def translate_url_to_id(url: str) -> Optional[str]:
         return video_id[0][1]
     else:
         raise UrlError(url)
+        # TODO: catch
 
 
 def _remove_empty_kwargs(**kwargs) -> dict:
@@ -100,6 +101,7 @@ def _get_comments(client: Resource, **kwargs) -> List[str]:
                 comments.append(text)
         else:
             raise DataFetchingError(kwargs["videoId"])
+            # TODO: catch
 
         if "nextPageToken" in response:
             kwargs["pageToken"] = response.get("nextPageToken")
@@ -121,6 +123,7 @@ def _video_meta_by_id(client: Resource, **kwargs) -> List[Union[List[str], str]]
 
     if not response["items"]:
         raise DataFetchingError(kwargs["id"])
+        # TODO catch
 
     # meta data
     title = response["items"][0]["snippet"]["title"]
@@ -280,6 +283,7 @@ def get_report(video: Video) -> Optional[Report]:
     """
     if not video.lang:
         raise AttributeError(f"Error: video(id: {video.get_id()}) language is not set.")
+        # TODO: catch
     # acquire nlp client
     nlp = language.LanguageServiceClient()
 

@@ -53,23 +53,26 @@ class Report:
 
     === Attributes ===
     _id: the video id that this report corresponds to;
+    video_title: title of video;
     attitude: the attitude of viewers;
     emoji: emoji repr of the attitude;
     wcloud: path to where the image of word-cloud is stored.
     """
 
     _id: str
+    video_title: str
     attitude: str
     emoji: str
     wcloud: str
 
     def __init__(self, **kwargs):
         for k, v in kwargs.items():
-            if k in ["_id", "attitude", "emoji", "wcloud"]:
+            # add tags and most mentioned words
+            if k in ["_id", "video_title", "attitude", "emoji", "wcloud"]:
                 self.__dict__[k] = v
 
     def __str__(self) -> str:
-        return f"Video(id: {self._id}) received {self.attitude}, which is {self.emoji}."
+        return f"Video {self.video_title} (id: {self._id}) received {self.attitude}, which is {self.emoji}."
 
 class UrlError(Exception):
     """Exception class for URL error
