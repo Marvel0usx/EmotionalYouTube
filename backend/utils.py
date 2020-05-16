@@ -15,7 +15,7 @@ import os
 import langdetect
 from wordcloud import WordCloud
 from typing import Optional, Union, List, Tuple
-from data import Video, Report, DataFetchingError, UrlError
+from datatypes import Video, Report, DataFetchingError, UrlError
 from googleapiclient.discovery import build, Resource
 from googleapiclient.errors import HttpError, UnknownApiNameOrVersion
 from google.cloud import language

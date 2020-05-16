@@ -11,7 +11,7 @@ any changes, should conform to the open source licence as provided.
 """
 
 from typing import Optional, Tuple
-from data import Video, Report
+from datatypes import Video, Report
 from utils import translate_url_to_id, video_data_aggregate, get_report
 
 
@@ -29,5 +29,5 @@ def main(video_id: str) -> Tuple[Optional[Video], Optional[Report]]:
 
 
 if __name__ == "__main__":
-    # start testing below
+    # init_db testing below
     main("https://www.youtube.com/watch?v=PTZiDnuC86g")
