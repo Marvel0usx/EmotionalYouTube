@@ -53,14 +53,14 @@ class DBM:
     """
 
     @staticmethod
-    def select_from_db(vid: str, attribute: str) -> Optional[BaseQuery]:
+    def select_report_from_db(vid: str) -> Report:
         """Function to retrieve the record who has the given video_id.
         """
         # select by primary key
-        pass
+        return _db.Query.get(vid).first().report
 
     @staticmethod
-    def is_exist(vid: str) -> bool:
+    def does_exist(vid: str) -> bool:
         """Helper function to check for existence."""
         return True if _db.Query.get(vid) else False
 
@@ -72,6 +72,7 @@ class DBM:
 
     @staticmethod
     def update_entry(vid, video_meta, report):
+        # TODO
         pass
 
     @staticmethod
