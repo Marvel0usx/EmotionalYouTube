@@ -1,9 +1,22 @@
+# -*- coding: utf-8 -*-
+"""
+Emotional-YouTube Collection of Utilities
+Jan(Zhan) Lu and Haoyan Wang, Winter 2020
+
+This code is provided for non-commercial and study purpose.
+Copying for purposes other than this use is expressly prohibited.
+All forms of distribution of this code, whether as given or with
+any changes, should conform to the open source licence as provided.
+
+"""
+
 import os
-from utils import translate_url_to_id
-from interface import main
-from flask import Flask, jsonify
-from datatypes import Report
 import db
+import base64
+from interface import main
+from datatypes import Report
+from flask import Flask, jsonify
+
 
 # init app
 app = Flask(__name__)
@@ -17,31 +30,40 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app = db.init_db(app)
 
 
-@app.route("/analysis/<link>", methods=["GET"])
-def rest_return_report(link: str):
+@app.route("/analysis/<vid>", methods=["GET"])
+def rest_return_report(vid: str):
     """Route for getting report by providing video id. Function returns
     formatted json file on success; returns empty json file otherwise.
     """
     # TODO: logging
-    video_id = translate_url_to_id(link)
-
-    if not video_id:
-        # TODO: return empty json
-        return jsonify()
-
-    if not db.DBM.does_exist(video_id) or db.DBM.is_expired(video_id):
-        new_video_meta, new_report = main(video_id)
-        db.DBM.update_entry(video_id, new_video_meta, new_report)
-        return process_response(new_report)
+    if db.DBM.does_exist(vid):
+        if not db.DBM.is_expired(vid):
+            report = db.DBM.select_report_from_db(vid)
+            return process_response(report)
+        else:
+            new_video_meta, new_report = main(vid)
+            db.DBM.update_entry(vid, new_video_meta, new_report)
+            return process_response(new_report)
     else:
-        report = db.DBM.select_report_from_db(video_id)
-        return process_response(report)
+        new_video_meta, new_report = main(vid)
+        db.DBM.add_entry_to_db(vid, new_video_meta, new_report)
+        return process_response(new_report)
 
 
 def process_response(report: Report):
     """Helper function to format json file as response."""
-    # TODO
-    pass
+    # encode image to base64 string
+    response = dict()
+
+    response["attitude"] = report.attitude
+    response["video_title"] = report.video_title
+    response["emoji"] = report.emoji
+
+    with open(report.wcloud, "rb") as img:
+        b64_img_str = base64.b64encode(img.read()).decode("ascii")
+        response["wcloud"] = b64_img_str
+
+    return jsonify(**response)
 
 
 if __name__ == "__main__":

@@ -65,7 +65,6 @@ def translate_url_to_id(url: str) -> Optional[str]:
         return video_id[0][1]
     else:
         raise UrlError(url)
-        # TODO: catch
 
 
 def _remove_empty_kwargs(**kwargs) -> dict:
@@ -147,7 +146,7 @@ def video_data_aggregate(video_id: str) -> Optional[Video]:
         # guess language for the majority of the comments
         lang = _detect_lang(comments)
         # encapsulate
-        params = ["_id", "title", "channel_id",
+        params = ["_id", "video_title", "channel_id",
                   "channel_title", "tags", "comments", "lang"]
         video_meta = [video_id] + meta + [comments] + [lang]
         return Video(**dict(zip(params, video_meta)))
@@ -229,7 +228,7 @@ def _sentiment_analysis(client: LanguageServiceClient, text: str) -> Tuple[str, 
 
 
 def _generate_word_cloud(filename: str, text: str, lang: str) -> str:
-    """Function to generate word cloud and returns the path to the image.
+    """Function to generate word cloud and returns the absolute path to the image.
     """
     # extend to file file path
     this_path = os.path.abspath(os.path.dirname(__file__))
@@ -274,7 +273,9 @@ def _generate_word_cloud(filename: str, text: str, lang: str) -> str:
 
     wc.to_file(file_out_path)
 
-    return "%s.png" % filename
+    abs_path_to_img = os.path.join(this_path, PATH_TO_IMG.format(filename))
+
+    return abs_path_to_img
 
 
 def get_report(video: Video) -> Optional[Report]:
@@ -291,8 +292,8 @@ def get_report(video: Video) -> Optional[Report]:
     attitude, emoji = _sentiment_analysis(nlp, " ".join(video.comments))
     wcloud_img_path = _generate_word_cloud(video.get_id(), adj_list, video.lang)
 
-    init_dict = dict(zip(["_id", "attitude", "emoji", "wcloud"],
-                         [video.get_id(), attitude, emoji, wcloud_img_path]))
+    init_dict = dict(zip(["_id", "video_title", "attitude", "emoji", "wcloud"],
+                         [video.get_id(), video.video_title, attitude, emoji, wcloud_img_path]))
     return Report(**init_dict)
 
 

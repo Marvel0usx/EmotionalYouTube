@@ -7,7 +7,7 @@ This code is provided for non-commercial and study purpose.
 Copying for purposes other than this use is expressly prohibited.
 All forms of distribution of this code, whether as given or with
 any changes, should conform to the open source licence as provided.
-
+4
 """
 
 from typing import List
@@ -18,7 +18,7 @@ class Video:
 
     === Attributes ===
     _id          : the unique YouTube id of the video;
-    title        : string of the title of the video;
+    video_title  : string of the title of the video;
     channel_id   : the unique YouTube id of the channel;
     channel_title: title of this video's channel;
     tags         : list of tags of this video;
@@ -29,13 +29,13 @@ class Video:
     _id        : str
     lang       : str
     tags       : List[str]
-    title      : str
+    video_title: str
     channel_id : str
     channel_title: str
     comments   : List[str]
 
     def __init__(self, **kwargs):
-        valid_keys = ["_id", "title", "channel_id", "channel_title", "tags", "comments", "lang"]
+        valid_keys = ["_id", "video_title", "channel_id", "channel_title", "tags", "comments", "lang"]
 
         for key in valid_keys:
             self.__dict__[key] = kwargs.get(key)
@@ -56,7 +56,7 @@ class Report:
     video_title: title of video;
     attitude: the attitude of viewers;
     emoji: emoji repr of the attitude;
-    wcloud: path to where the image of word-cloud is stored.
+    wcloud: absolute path to where the image of word-cloud is stored.
     """
 
     _id: str
@@ -73,6 +73,7 @@ class Report:
 
     def __str__(self) -> str:
         return f"Video {self.video_title} (id: {self._id}) received {self.attitude}, which is {self.emoji}."
+
 
 class UrlError(Exception):
     """Exception class for URL error

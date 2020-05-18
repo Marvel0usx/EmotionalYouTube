@@ -12,7 +12,7 @@ any changes, should conform to the open source licence as provided.
 
 from typing import Optional, Tuple
 from datatypes import Video, Report
-from utils import translate_url_to_id, video_data_aggregate, get_report
+from utils import video_data_aggregate, get_report
 
 
 def main(video_id: str) -> Tuple[Optional[Video], Optional[Report]]:

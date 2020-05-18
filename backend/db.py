@@ -1,11 +1,20 @@
-from flask_sqlalchemy import SQLAlchemy
+# -*- coding: utf-8 -*-
+"""
+Emotional-YouTube Collection of Utilities
+Jan(Zhan) Lu and Haoyan Wang, Winter 2020
+
+This code is provided for non-commercial and study purpose.
+Copying for purposes other than this use is expressly prohibited.
+All forms of distribution of this code, whether as given or with
+any changes, should conform to the open source licence as provided.
+
+"""
+
 from sqlalchemy import exc
-from flask_sqlalchemy import BaseQuery
-from flask_marshmallow import Marshmallow
-from typing import Optional
 from datatypes import Video, Report
 from datetime import datetime, timedelta
-import pickle
+from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
 
 
 # init database (must be initialized first before Marshmallow)
@@ -57,23 +66,23 @@ class DBM:
         """Function to retrieve the record who has the given video_id.
         """
         # select by primary key
-        return _db.Query.get(vid).first().report
+        return _ReportEntry.query.get(vid).report
 
     @staticmethod
     def does_exist(vid: str) -> bool:
         """Helper function to check for existence."""
-        return True if _db.Query.get(vid) else False
+        return True if _ReportEntry.query.get(vid) else False
 
     @staticmethod
     def is_expired(vid: str) -> bool:
         """Function to check whether report is expired or not."""
-        entry = _db.Query.get(vid)
+        entry = _ReportEntry.query.get(vid)
         return datetime.utcnow() - entry.latest_update > timedelta(10)
 
     @staticmethod
     def update_entry(vid, video_meta, report):
-        # TODO
-        pass
+        """Function to update the entry indexed by video_id."""
+        _ReportEntry.query.get(vid).update({video_meta: video_meta, report: report})
 
     @staticmethod
     def add_entry_to_db(vid: str, video_meta: Video, report: Report) -> None:
