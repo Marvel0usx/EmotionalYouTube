@@ -1,3 +1,4 @@
-from backend.interface import main
+from backend.app import app
 
-print(main("https://www.youtube.com/watch?v=Ltoya2QrRBg"))
+# import and run server
+app.run()

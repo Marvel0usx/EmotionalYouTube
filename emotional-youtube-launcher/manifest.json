@@ -1,0 +1,20 @@
+{
+    "manifest_version": 2,
+    "name": "Emotional YouTube",
+    "version": "1.0",
+    "description": "Emotional YouTube tells you the attitude of comments!",
+    "icons": {
+        "128": "icon128.png",
+        "48": "icon48.png",
+        "16": "icon16.png"
+    },
+    "browser_action": {
+        "default_icon": "images/icon128.png",
+        "default_popup": "popup.html"
+    },
+    "commands": {
+        "_execute_browser_action": {
+            "description": "Opens popup.html"
+        }
+    }
+}
