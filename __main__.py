@@ -1,4 +1,5 @@
 from backend.app import app
 
-# import and run server
-app.run()
+if __name__ == "__main__":
+    # import and run server
+    app.run()
