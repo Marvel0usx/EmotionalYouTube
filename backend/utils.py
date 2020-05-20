@@ -57,7 +57,7 @@ def _init_service() -> Optional[Resource]:
 def translate_url_to_id(url: str) -> Optional[str]:
     """Function that translate string id to VideoId object
     """
-    video_id_pattern = re.compile(r"\?(v|vi)=([A-Za-z0-9_-]+)")
+    video_id_pattern = re.compile(r"(?<=\?v\=)([A-Za-z0-9_-]+)")
     video_id = re.findall(video_id_pattern, url)
 
     if video_id:

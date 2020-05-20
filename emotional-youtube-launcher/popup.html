@@ -5,78 +5,12 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://fonts.google.com/css2/family/Open+Sans" type="text/CSS">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" 
+    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" 
+    crossorigin="anonymous" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+    <script src="popup.js"></script>
     <title>Emotional YouTube</title>
-
-    <style>
-        html, body {
-            font-size: 14px;
-            font-family: "Open Sans", sans-serif;
-        }
-        
-        div.logo {
-            margin-block-start: -4px;
-        }
-
-        div.titles {
-            margin-left: 4px;
-            color: #253140;
-        }
-
-        div.title {
-            font-size: 1.3em;
-        }
-        
-        div.subtitle {
-            font-size: 0.8em;
-        }
-
-        span.version {
-            font-size: 0.88em;
-            color: #cac9c8;
-        }
-
-        header {
-            overflow: hidden;
-            background: rgba(0, 0, 0, 0.1);
-        }
-
-        header > div {
-            float: left;
-        }
-
-        p {
-            font-size: 0.8em;
-            color: #253140;
-        }
-
-        .wcloud {
-            width: 280px;
-        }
-
-        .launcher {
-            margin-top: 4px;
-            margin-bottom: 4px;
-            margin-left: 2px;
-            margin-right: 2px;
-        }
-
-        .launcher.header {
-            margin-top: 0px;
-            margin-bottom: 0px;
-        }
-
-        #button-analyze {
-            border:rgba(0, 0, 0, 0.1);
-        }
-
-        #url-input-box {
-            height:22px;
-        }
-
-    </style>
 </head>
 <body>
     <header class="launcher header">
@@ -90,12 +24,12 @@
     </header>
     <div class="launcher input-area">
         <strong class="prompt">The <span class="vid" title="Little piece of identification code right after v= in URL">video id</span> is</strong>
-        <input id="url-input-box" type="text" size="12">
-        <button id="button-analyze" onclick="">Analyze</button>
+        <input id="idbox" type="text" size="13">
+        <button id="btn-analyze">Analyze</button>
     </div>
     <div class="launcher result-area">
-        <img src="images/default.png" alt="Default report image" title="" class="wcloud">
-        <span class="report-summary"></span>
+        <img src="images/default.png" alt="Default report image" title="" id="wcloud">
+        <p id="report"></p>
         <div class="flex-containter tags">
         </div>
     </div>
