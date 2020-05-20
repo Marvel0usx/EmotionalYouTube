@@ -4,16 +4,17 @@ function Analyze() {
     document.getElementById('report').innerHTML = vid;
 }
 
-// function to retrieve vid from storage
-function setVid() {
-    // vid = "";
-    // chrome.storage.sync.get(['vid'], function (result) {
-    //     if (result.vid !== null) {
-    //         vid = result.vid;
-    //     } else {
-    //         return;
-    //     }
-    // });
-    // document.getElementById('idbox').value = vid;
-    // chrome.storage.sync.set({'vid': null});
-}
+document.addEventListener("DOMContentLoaded",
+    function setup() {
+        document.getElementById("btn-analyze").addEventListener("click", Analyze);
+        // vid = "";
+        // chrome.storage.sync.get(['vid'], function (result) {
+        //     if (result.vid !== null) {
+        //         vid = result.vid;
+        //     } else {
+        //         return;
+        //     }
+        // });
+        // document.getElementById('idbox').value = vid;
+        // chrome.storage.sync.set({'vid': null});
+    }, false);
