@@ -15,6 +15,7 @@ import db
 import base64
 from interface import main
 from datatypes import Report
+from flask_cors import cross_origin
 from flask import Flask, jsonify
 
 
@@ -31,6 +32,7 @@ app = db.init_db(app)
 
 
 @app.route("/analysis/<vid>", methods=["GET"])
+@cross_origin()
 def rest_return_report(vid: str):
     """Route for getting report by providing video id. Function returns
     formatted json file on success; returns empty json file otherwise.

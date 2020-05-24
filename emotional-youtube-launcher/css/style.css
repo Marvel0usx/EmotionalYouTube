@@ -1,8 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
 
 html, body {
-    margin-left: 2px;
-    margin-right: 2px;
+    color: #253140;
     font-size: 14px;
     font-family: 'Open Sans', sans-serif;
 }
@@ -13,12 +12,10 @@ div.logo {
     margin-block-start: -4px;
 }
 
-div.titles {
-    color: #253140;
-}
-
 div.title {
     font-size: 1.3em;
+    margin-top: 3px;
+    margin-block-end: -4px;
 }
 
 div.subtitle {
@@ -30,10 +27,6 @@ span.version {
     color: #cac9c8;
 }
 
-/* p {
-    font-size: 0.8em;
-    color: #253140;
-} */
 #report {
     font-size: 1.12em;
 }
@@ -45,8 +38,8 @@ span.version {
 .launcher {
     margin-top: 4px;
     margin-bottom: 4px;
-    margin-left: 2px;
-    margin-right: 2px;
+    margin-left: 1px;
+    margin-right: 0px;
 }
 
 .launcher.header {
@@ -54,7 +47,7 @@ span.version {
     background: rgba(0, 0, 0, 0.1);
     margin-top: 0px;
     margin-bottom: 0px;
-    padding-top: 4px;
+    padding-top: 2px;
 }
 
 #btn-analyze {
