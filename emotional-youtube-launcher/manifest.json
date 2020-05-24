@@ -1,32 +1,36 @@
 {
+    "author": "Harry and Jan",
     "manifest_version": 2,
     "name": "Emotional YouTube",
     "version": "1.0",
     "description": "Emotional YouTube tells you the attitude of comments!",
+
     "icons": {
-        "128": "icon128.png",
-        "48": "icon48.png",
-        "16": "icon16.png"
+        "128": "images/icon128.png",
+        "48": "images/icon48.png",
+        "16": "images/icon16.png"
     },
 
     "browser_action": {
-        "default_icon": "icon128.png",
-        "default_popup": "popup.html"
+        "default_icon": "images/icon128.png",
+        "default_popup": "popup.html",
+        "default_title": "Emotional YouTube"
     },
 
-    "permissions": [
-        "activeTab",
-        "storage"
-    ],
-
     "background": {
-        "scripts": ["background.js"],
+        "scripts": ["js/background.js"],
         "persistent": false
     },
 
-    "commands": {
-        "_execute_browser_action": {
-            "description": "Opens popup.html"
-        }
-    }
+    "content_scripts": [{
+        "js": ["js/content.js"],
+        "matches": ["\u003Call_urls>"],
+        "run_at": "document_start"
+    }],
+
+    "permissions": [
+        "tabs", "activeTab"
+    ],
+
+    "web_accessible_resources": ["js/*", "images/*"]
 }
