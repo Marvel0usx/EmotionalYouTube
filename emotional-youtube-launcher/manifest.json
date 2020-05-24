@@ -17,17 +17,6 @@
         "default_title": "Emotional YouTube"
     },
 
-    "background": {
-        "scripts": ["js/background.js"],
-        "persistent": false
-    },
-
-    "content_scripts": [{
-        "js": ["js/content.js"],
-        "matches": ["\u003Call_urls>"],
-        "run_at": "document_start"
-    }],
-
     "permissions": [
         "tabs", "activeTab"
     ],
