@@ -11,8 +11,8 @@ any changes, should conform to the open source licence as provided.
 """
 
 from typing import Optional, Tuple
-from datatypes import Video, Report
-from utils import video_data_aggregate, get_report
+from backend.datatypes import Video, Report
+from backend.utils import video_data_aggregate, get_report
 
 
 def main(video_id: str) -> Tuple[Optional[Video], Optional[Report]]:

@@ -56,7 +56,8 @@ class Report:
     video_title: title of video;
     attitude: the attitude of viewers;
     emoji: emoji repr of the attitude;
-    wcloud: absolute path to where the image of word-cloud is stored.
+    wcloud: absolute path to where the image of word-cloud is stored;
+    tags: list of tags of video.
     """
 
     _id: str
@@ -64,11 +65,12 @@ class Report:
     attitude: str
     emoji: str
     wcloud: str
+    tags: List[str]
 
     def __init__(self, **kwargs):
         for k, v in kwargs.items():
             # add tags and most mentioned words
-            if k in ["_id", "video_title", "attitude", "emoji", "wcloud"]:
+            if k in ["_id", "video_title", "attitude", "emoji", "wcloud", "tags"]:
                 self.__dict__[k] = v
 
     def __str__(self) -> str:

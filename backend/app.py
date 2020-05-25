@@ -11,10 +11,10 @@ any changes, should conform to the open source licence as provided.
 """
 
 import os
-import db
 import base64
-from interface import main
-from datatypes import Report
+import backend.db as db
+from backend.interface import main
+from backend.datatypes import Report
 from flask_cors import cross_origin
 from flask import Flask, jsonify
 
@@ -67,6 +67,8 @@ def process_response(report: Report):
     with open(report.wcloud, "rb") as img:
         b64_img_str = base64.b64encode(img.read()).decode("ascii")
         response["wcloud"] = b64_img_str
+    
+    response["tags"] = report.tags;
 
     return jsonify(**response)
 

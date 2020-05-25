@@ -15,7 +15,7 @@ import os
 import langdetect
 from wordcloud import WordCloud
 from typing import Optional, Union, List, Tuple
-from datatypes import Video, Report, DataFetchingError, UrlError
+from backend.datatypes import Video, Report, DataFetchingError, UrlError
 from googleapiclient.discovery import build, Resource
 from googleapiclient.errors import HttpError, UnknownApiNameOrVersion
 from google.cloud import language
@@ -25,7 +25,7 @@ from google.cloud.language import LanguageServiceClient
 # YouTube Data API offsets
 YOUTUBE_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
-MAX_NUMBER_COMMENTS = 10
+MAX_NUMBER_COMMENTS = 100
 NUM_RESULTS_PER_REQUEST = 5
 DEVELOPER_KEY = os.environ["GCP_APIKEY_EmotionalYouTube"]
 GOOGLE_APPLICATION_CREDENTIALS = os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
@@ -292,8 +292,9 @@ def get_report(video: Video) -> Optional[Report]:
     attitude, emoji = _sentiment_analysis(nlp, " ".join(video.comments))
     wcloud_img_path = _generate_word_cloud(video.get_id(), adj_list, video.lang)
 
-    init_dict = dict(zip(["_id", "video_title", "attitude", "emoji", "wcloud"],
-                         [video.get_id(), video.video_title, attitude, emoji, wcloud_img_path]))
+    init_dict = dict(zip(["_id", "video_title", "attitude", "emoji", "wcloud", "tags"],
+                         [video.get_id(), video.video_title, attitude, emoji, wcloud_img_path,
+                          video.tags]))
     return Report(**init_dict)
 
 
