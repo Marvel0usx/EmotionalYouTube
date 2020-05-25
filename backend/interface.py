@@ -11,20 +11,20 @@ any changes, should conform to the open source licence as provided.
 """
 
 from typing import Optional, Tuple
-from backend.datatypes import Video, Report
-from backend.utils import video_data_aggregate, get_report
+from . import datatypes
+from . import utils
 
 
-def main(video_id: str) -> Tuple[Optional[Video], Optional[Report]]:
+def main(video_id: str) -> Tuple[Optional[datatypes.Video], Optional[datatypes.Report]]:
     """Main interface for backend, called by flask. It returns the
     result of sentiment analysis and the filename of the word cloud
     picture.
     """
-    video = video_data_aggregate(video_id)
+    video = utils.video_data_aggregate(video_id)
     if not video:
         return None, None
     else:
-        report = get_report(video)
+        report = utils.get_report(video)
     return video, report
 
 

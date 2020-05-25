@@ -15,7 +15,7 @@ import os
 import langdetect
 from wordcloud import WordCloud
 from typing import Optional, Union, List, Tuple
-from backend.datatypes import Video, Report, DataFetchingError, UrlError
+from . import datatypes
 from googleapiclient.discovery import build, Resource
 from googleapiclient.errors import HttpError, UnknownApiNameOrVersion
 from google.cloud import language
@@ -64,7 +64,7 @@ def translate_url_to_id(url: str) -> Optional[str]:
         # return the first match
         return video_id[0][1]
     else:
-        raise UrlError(url)
+        raise datatypes.UrlError(url)
 
 
 def _remove_empty_kwargs(**kwargs) -> dict:
@@ -99,7 +99,7 @@ def _get_comments(client: Resource, **kwargs) -> List[str]:
                 text = comment["snippet"]["textDisplay"]
                 comments.append(text)
         else:
-            raise DataFetchingError(kwargs["videoId"])
+            raise datatypes.DataFetchingError(kwargs["videoId"])
             # TODO: catch
 
         if "nextPageToken" in response:
@@ -121,7 +121,7 @@ def _video_meta_by_id(client: Resource, **kwargs) -> List[Union[List[str], str]]
     ).execute()
 
     if not response["items"]:
-        raise DataFetchingError(kwargs["id"])
+        raise datatypes.DataFetchingError(kwargs["id"])
         # TODO catch
 
     # meta data
@@ -132,7 +132,7 @@ def _video_meta_by_id(client: Resource, **kwargs) -> List[Union[List[str], str]]
     return [title, channel_id, channel_title, tags]
 
 
-def video_data_aggregate(video_id: str) -> Optional[Video]:
+def video_data_aggregate(video_id: str) -> Optional[datatypes.Video]:
     """Facade function to gather information about the video and encapsulate to 
     Video object.
     """
@@ -149,8 +149,8 @@ def video_data_aggregate(video_id: str) -> Optional[Video]:
         params = ["_id", "video_title", "channel_id",
                   "channel_title", "tags", "comments", "lang"]
         video_meta = [video_id] + meta + [comments] + [lang]
-        return Video(**dict(zip(params, video_meta)))
-    except DataFetchingError as e:
+        return datatypes.Video(**dict(zip(params, video_meta)))
+    except datatypes.DataFetchingError as e:
         print(e)
         return None
         # TODO(harry) add logging module
@@ -278,7 +278,7 @@ def _generate_word_cloud(filename: str, text: str, lang: str) -> str:
     return abs_path_to_img
 
 
-def get_report(video: Video) -> Optional[Report]:
+def get_report(video: datatypes.Video) -> Optional[datatypes.Report]:
     """Facade function to get sentiment analysis report and to get the path to
     the word-cloud image.
     """
@@ -295,7 +295,7 @@ def get_report(video: Video) -> Optional[Report]:
     init_dict = dict(zip(["_id", "video_title", "attitude", "emoji", "wcloud", "tags"],
                          [video.get_id(), video.video_title, attitude, emoji, wcloud_img_path,
                           video.tags]))
-    return Report(**init_dict)
+    return datatypes.Report(**init_dict)
 
 
 if __name__ == "__main__":

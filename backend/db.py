@@ -11,7 +11,7 @@ any changes, should conform to the open source licence as provided.
 """
 
 from sqlalchemy import exc
-from datatypes import Video, Report
+from . import datatypes
 from datetime import datetime, timedelta
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
@@ -36,7 +36,7 @@ class _ReportEntry(_db.Model):
     report = _db.Column(_db.PickleType)
     latest_update = _db.Column(_db.DateTime)
 
-    def __init__(self, video_id: str, video_meta: Video, report: Report, latest_update):
+    def __init__(self, video_id: str, video_meta: datatypes.Video, report: datatypes.Report, latest_update):
         self.video_id = video_id
         self.video_meta = video_meta
         self.report = report
@@ -62,7 +62,7 @@ class DBM:
     """
 
     @staticmethod
-    def select_report_from_db(vid: str) -> Report:
+    def select_report_from_db(vid: str) -> datatypes.Report:
         """Function to retrieve the record who has the given video_id.
         """
         # select by primary key
@@ -86,7 +86,7 @@ class DBM:
         _ReportEntry.query.get(vid).update({video_meta: video_meta, report: report})
 
     @staticmethod
-    def add_entry_to_db(vid: str, video_meta: Video, report: Report) -> None:
+    def add_entry_to_db(vid: str, video_meta: datatypes.Video, report: datatypes.Report) -> None:
         """Function to add new report entry to database.
         """
         new_entry = _ReportEntry(vid, video_meta, report, datetime.utcnow())

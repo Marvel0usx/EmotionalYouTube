@@ -12,9 +12,9 @@ any changes, should conform to the open source licence as provided.
 
 import os
 import base64
-import backend.db as db
-from backend.interface import main
-from backend.datatypes import Report
+from . import db
+from . import interface
+from . import datatypes
 from flask_cors import cross_origin
 from flask import Flask, jsonify
 
@@ -46,16 +46,16 @@ def rest_return_report(vid: str):
         elif not db.DBM.is_expired(vid):
             return process_response(report)
         else:
-            new_video_meta, new_report = main(vid)
+            new_video_meta, new_report = interface.main(vid)
             db.DBM.update_entry(vid, new_video_meta, new_report)
             return process_response(new_report)
     else:
-        new_video_meta, new_report = main(vid)
+        new_video_meta, new_report = interface.main(vid)
         db.DBM.add_entry_to_db(vid, new_video_meta, new_report)
         return process_response(new_report) if new_report else jsonify()
 
 
-def process_response(report: Report):
+def process_response(report: datatypes.Report):
     """Helper function to format json file as response."""
     # encode image to base64 string
     response = dict()

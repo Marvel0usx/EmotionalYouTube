@@ -1,5 +1,5 @@
-from backend.app import app
+import backend
 
-if __name__ == "__main__":
-    # import and run server
-    app.run()
+# Run in console
+# python3 EmotionaYouTube
+backend.app.app.run()
