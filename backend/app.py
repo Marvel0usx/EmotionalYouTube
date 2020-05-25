@@ -39,8 +39,11 @@ def rest_return_report(vid: str):
     """
     # TODO: logging
     if db.DBM.does_exist(vid):
-        if not db.DBM.is_expired(vid):
-            report = db.DBM.select_report_from_db(vid)
+        report = db.DBM.select_report_from_db(vid)
+        if not report:
+            # means the id is not valid and recorded
+            return jsonify()
+        elif not db.DBM.is_expired(vid):
             return process_response(report)
         else:
             new_video_meta, new_report = main(vid)
@@ -49,7 +52,7 @@ def rest_return_report(vid: str):
     else:
         new_video_meta, new_report = main(vid)
         db.DBM.add_entry_to_db(vid, new_video_meta, new_report)
-        return process_response(new_report)
+        return process_response(new_report) if new_report else jsonify()
 
 
 def process_response(report: Report):

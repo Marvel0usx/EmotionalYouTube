@@ -1,4 +1,4 @@
-const api = "http://127.0.0.1:5000/analysis/"
+const URL = "http://127.0.0.1:5000/analysis/";
 
 function displayResponse() {
     if (this.readyState == XMLHttpRequest.DONE && this.status == 200) {
@@ -14,11 +14,12 @@ function displayResponse() {
 // function to call api
 function getReport(vid) {
     let httpRequest = new XMLHttpRequest();
-    httpRequest.open("GET", api + vid, true);
+    httpRequest.open("GET", URL.concat(vid), true);
+    alert(URL.concat(vid));
+    httpRequest.onload = displayResponse;
     httpRequest.responseType = 'json';
     httpRequest.setRequestHeader("Content-Type", "application/json");
     httpRequest.send();
-    httpRequest.onload = displayResponse;
 }
 
 function showReport(response) {

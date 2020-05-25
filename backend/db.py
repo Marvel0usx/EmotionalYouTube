@@ -66,17 +66,18 @@ class DBM:
         """Function to retrieve the record who has the given video_id.
         """
         # select by primary key
-        return _ReportEntry.query.get(vid).report
+        return _ReportEntry.query.filter_by(video_id=vid).first().report
 
     @staticmethod
     def does_exist(vid: str) -> bool:
         """Helper function to check for existence."""
-        return True if _ReportEntry.query.get(vid) else False
+        res = _ReportEntry.query.filter_by(video_id=vid).first()
+        return True if res else False
 
     @staticmethod
     def is_expired(vid: str) -> bool:
         """Function to check whether report is expired or not."""
-        entry = _ReportEntry.query.get(vid)
+        entry = _ReportEntry.query.filter_by(video_id=vid).first()
         return datetime.utcnow() - entry.latest_update > timedelta(10)
 
     @staticmethod
