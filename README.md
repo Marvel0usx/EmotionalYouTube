@@ -1,8 +1,18 @@
 ![logo](img/logo.png)
 
 Emotional YouTube is a browser extension that provides information and analysis for YouTube videos.
-## **Environment Setup**
+## **Cloud Environment Setup**
+Please visit and read the documentation from Google to set up a GCP account and a project.
 
+[Google Cloud Platform Setup Guide](https://cloud.google.com/deployment-manager/docs/step-by-step-guide/installation-and-setup)
+
+Enable `Google Natural Language API` and `YouTube Data V3 API`. Acquire API key and application credential, and setup environmental variables:
+```{sh}
+GOOGLE_APPLICATION_CREDENTIALS = your_credentials
+APIKEY = your_apikey
+```
+
+## **Environment Setup**
 Clone from Github:
 ```{sh}
 git clone https://github.com/Marvel0usx/EmotionalYouTube
