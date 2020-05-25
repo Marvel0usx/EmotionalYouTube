@@ -8,6 +8,7 @@ html, body {
 
 div.logo {
     float: left;
+    margin-left: 3px;
     margin-right: 3px;
     margin-block-start: -4px;
 }
@@ -27,14 +28,6 @@ span.version {
     color: #cac9c8;
 }
 
-#report {
-    font-size: 1.12em;
-}
-
-#wcloud {
-    width: 280px;
-}
-
 .launcher {
     margin-top: 4px;
     margin-bottom: 4px;
@@ -50,12 +43,64 @@ span.version {
     padding-top: 2px;
 }
 
+.flex-container {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.flex {
+    background: rgba(0, 0, 0, 0.1);
+    border: 0.5px solid rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+    width: fit-content;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin: 2px;
+    opacity: 1;
+    transition: opacity 0.2s ease-in-out;
+}
+
+div.flex:hover {
+    opacity: 0.4;
+}
+
+p#report {
+    margin-top: 2px;
+    margin-bottom: 0;
+}
+
+#report {
+    font-size: 1.12em;
+}
+
+#wcloud {
+    width: 280px;
+}
+
 #btn-analyze {
+    font-size: 0.95em;
+    box-shadow: 0 2px #999;
     border: rgba(0, 0, 0, 0.5);
     border-radius: 10px;
-    background: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.2);
+    vertical-align: text-bottom;
+    cursor: pointer;
+    outline: none
+}
+  
+#btn-analyze:hover {
+    background-color: rgba(0, 0, 70, 0.2);
+}
+  
+#btn-analyze:active {
+    background-color: rgb(0, 178, 148);
+    box-shadow: 0 1px #666;
+    transform: translateY(1px);
 }
 
 #idbox {
     height:22px;
+    transition: opacity 0.2s ease-in-out;
 }

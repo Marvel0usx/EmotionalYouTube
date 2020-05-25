@@ -2,10 +2,13 @@ const URL = "http://127.0.0.1:5000/analysis/";
 
 function displayResponse() {
     if (this.readyState == XMLHttpRequest.DONE && this.status == 200) {
-        // TODO
         let responseObj = this.response;
-        alert(responseObj.attitude);
-        // return XMLHttpRequest.response;
+        document.getElementById("report").innerHTML = responseObj.attitude + responseObj.emoji;
+        document.getElementById("wcloud").src = "data:image/png;base64," + responseObj.wcloud;
+        for (tag in responseObj.tags) {
+            var tag = document.createElement("div")
+            document.getElementsByClassName("flex-containter tags")
+        }
     } else {
         document.getElementById("report").innerHTML = "No result available for this video.";
     }
