@@ -19,7 +19,7 @@ git clone https://github.com/Marvel0usx/EmotionalYouTube
 ```
 Or, create a new virtualenv and install the package from TestPyPI:
 ```{sh}
-pip install -i https://test.pypi.org/simple/EmotionalYouTube-pkg-marvel0usx==1.0.0
+pip install -i https://test.pypi.org/simple/ EmotionalYouTube-pkg-marvel0usx==1.0.0
 ```
 Run the default server in shell:
 ```{sh}
