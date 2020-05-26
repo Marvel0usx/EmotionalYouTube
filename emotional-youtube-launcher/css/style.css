@@ -10,17 +10,17 @@ div.logo {
     float: left;
     margin-left: 3px;
     margin-right: 3px;
-    margin-block-start: -4px;
+    margin-top: -4px;
 }
 
 div.title {
     font-size: 1.3em;
     margin-top: 3px;
-    margin-block-end: -4px;
 }
 
 div.subtitle {
     font-size: 0.8em;
+    margin-top: -4px;
 }
 
 span.version {
