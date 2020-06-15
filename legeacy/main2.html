@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>YouTuber Stats Analysis</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+
+    <!-- Bootstrap core CSS -->
+
+    <!-- Custom styles for this template -->
+    <link href="cover.css" rel="stylesheet">
+
+    <!-- script for data -->
+    <script src="web-func.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+          $("form").submit(function(event){
+            //this line disable the action inside of form
+            event.preventDefault();
+            //.val() to get the actual value of the id
+            var formName;
+            var url = $(" #form-url").val();
+            var submit = $("#form-submit").val();
+            
+            // set up the form name
+            theForms = document.getElementsByTagName("form");
+            for(i=0;i<theForms.length;i++){
+              formName = theForms[i].name;
+            }
+
+
+            $("#resultV").load("action_page.php", {
+              //left-right is key-value, which the value just got from extract info from above
+              
+              formName: formName,
+              url: url,
+              submit: submit
+              
+            }, function(responseTxt, statusTxt){
+              if(statusTxt == "success"){
+              }else if(statusTxt == "error"){
+                    alert("Error: " + xhr.status + ": " + xhr.statusText);
+                }
+                
+                
+            });
+          });
+        })
+
+    </script>
+</head>
+
+<body>
+  <div class="text-center" id="main-page">
+    <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+      <header class="masthead mb-auto">
+        <div class="inner">
+          <h3 class="masthead-brand">Analysis</h3>
+          <nav class="nav nav-masthead justify-content-center">
+            <a class="nav-link active" href="#">Home</a>
+            <a class="nav-link" href="#">Features</a>
+            <a class="nav-link" href="#">Contact</a>
+          </nav>
+        </div>
+      </header>
+
+      <main role="main" class="inner cover">
+        <h1 class="cover-heading">YouTuber Stats Analysis</h1>
+        <br>
+        <div class="lead">
+          <form id= "form" name= "form-form">
+  	        <div class="input-group w-100 ">
+  			  	<input id= "form-url" type="text" class="form-control bg-dark text-white" placeholder="" aria-label="" aria-describedby="basic-addon1" required>
+  			  	<div class="input-group-append">
+  			    	<button id= "form-submit" class="btn btn-danger" type="submit">GO!</button>
+  			  	</div>
+          </form>
+			</div>
+		</div>
+		<br>
+        <p class="lead">
+          <a href="#" class="btn btn-lg btn-secondary">Learn more</a>
+        </p>
+      </main>
+
+      <footer class="mastfoot mt-auto">
+        <div class="inner">
+          <p class= "text-center text-secondary">&copy; 2019 Team Orange (UofTHacksVI), All right reserved</p>
+        </div>
+      </footer>
+    </div>
+</div>
+
+
+
+
+
+
+<div class="bg-dark" id= "content" style="display: none;">
+  <!-- nav bar on the top -->
+  <div class="jumpotron jumpotron-fluid">
+    <nav class="navbar fixed-top-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">Here is the logo</a>
+      <a class="navbar-brand" href="main2.html">Home</a>
+      <a class="navbar-brand" href="#">About</a>
+      <a class="navbar-brand" href="#">Contact Us</a>
+    </nav>
+  </div>
+  <hr class="bg-light">
+
+
+  <div class="container bg-light">
+    <div class="row">
+      <!-- left empty part -->
+      <div class="col bg-dark">
+        
+      </div>
+      <!-- middle result part -->
+      <div class="container container-fluid col-9">
+        <!-- basic info -->
+        <hr>
+        <div class="jumpotron" id= "basic-info" style="max-width: 100%; max-height: width;">
+          <div class="row">
+            <div class="col-4">
+              <img class="align-center w-80 h-60" src="..." id="profile_pic" style="width: 200px; height: 200px;">
+            </div>
+            <div class="col-8">
+              <div class="container">
+                <h2 id="name">here comes the YouTuber's name</h2>
+                <h4 id="follwers"> Follwers:</h4>
+                <p id="otherInfo">here are the category of that youtuber and some info about him</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr>
+
+
+        <!-- views analysis -->
+        <div class="jumpotron">
+          <div class="row">
+            <div class="col-4">
+              <h2 id="views">Views</h2>
+              <p>here comes with some bs to bull about the analsis, 2 info is good enough</p>
+            </div>
+            <div class="col-8">
+              <canvas id="graph-views"></canvas>
+            </div>
+            
+          </div>
+        </div>
+        <hr>
+
+        <!-- comments analysis -->
+        <div class="jumpotron">
+          <div class="row">
+            <div class="col-8">
+              <canvas id="graph-likes"></canvas>
+            </div>
+            <div class="col-4">
+              <h2 id="likes">Likes</h2>
+              <p>here comes with some bs to bull about the analsis, 2 info is good enough</p>
+            </div>
+          </div>
+        </div>
+        <hr>
+
+        <!-- likes analysis -->
+        <div class="jumpotron">
+          <div class="row">
+            <div class="col-4">
+              <h2 id="comments">Comments</h2>
+              <p>here comes with some bs to bull about the analsis, 2 info is good enough</p>
+            </div>
+            <div class="col-8">
+              <canvas id="graph-comments"></canvas>
+            </div>
+            
+          </div>
+        </div>
+        <hr>
+
+
+
+        <!-- comments key words analysis -->
+        <div class="jumpotron">
+          <div class="row">
+            <div class="col-8">
+              <canvas id="graph-comments-cate"></canvas>
+            </div>
+            <div class="col-4">
+              <h2 id="comments-cate">Comments Category</h2>
+              <p>here comes with some bs to bull about the analsis, 2 info is good enough</p>
+            </div>
+          </div>
+        </div>
+        <hr>
+        
+      </div>
+
+      <!-- right empty part -->
+      <div class="col bg-dark">
+        
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer id="result-footer" style="display: none">
+  <br>
+  <div class= "bg-dark">
+    <p class= "text-center text-secondary">&copy; 2019 Team Orange (UofTHacksVI), All right reserved.</p>
+  </div>
+  <br><br>
+</footer>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+	<!-- Popper JS / Tether -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+
+	<!-- Latest compiled JavaScript / Bootstrap JS. -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    
+  </body>
+</html>
+
