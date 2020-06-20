@@ -230,6 +230,8 @@ def _sentiment_analysis(client: LanguageServiceClient, text: str) -> Tuple[str, 
 def _generate_word_cloud(filename: str, text: str, lang: str) -> str:
     """Function to generate word cloud and returns the absolute path to the image.
     """
+    if not text:
+        return ""
     # extend to file file path
     this_path = os.path.abspath(os.path.dirname(__file__))
 
@@ -291,6 +293,9 @@ def get_report(video: datatypes.Video) -> Optional[datatypes.Report]:
     adj_list = _extract_adjective(nlp, video.comments)
     attitude, emoji = _sentiment_analysis(nlp, " ".join(video.comments))
     wcloud_img_path = _generate_word_cloud(video.get_id(), adj_list, video.lang)
+
+    if not wcloud_img_path:
+        wcloud_img_path = None
 
     init_dict = dict(zip(["_id", "video_title", "attitude", "emoji", "wcloud", "tags"],
                          [video.get_id(), video.video_title, attitude, emoji, wcloud_img_path,

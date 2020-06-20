@@ -17,7 +17,11 @@ function displayResponse() {
             return;
         }
         document.getElementById("report").innerHTML = responseObj.attitude + responseObj.emoji;
-        document.getElementById("wcloud").src = "data:image/png;base64," + responseObj.wcloud;
+        if (responseObj.wcloud === null) {
+            document.getElementById("wcloud").src = "../images/well.png";
+        } else {
+            document.getElementById("wcloud").src = "data:image/png;base64," + responseObj.wcloud;
+        }
         var container = document.getElementsByClassName("flex-container")[0];
         for (tag in responseObj.tags) {
             var flex = document.createElement("div");

@@ -63,10 +63,12 @@ def process_response(report: datatypes.Report):
     response["attitude"] = report.attitude
     response["video_title"] = report.video_title
     response["emoji"] = report.emoji
-
-    with open(report.wcloud, "rb") as img:
-        b64_img_str = base64.b64encode(img.read()).decode("ascii")
-        response["wcloud"] = b64_img_str
+    if not report.wcloud:
+        response["wcloud"] = None
+    else:
+        with open(report.wcloud, "rb") as img:
+            b64_img_str = base64.b64encode(img.read()).decode("ascii")
+            response["wcloud"] = b64_img_str
     
     response["tags"] = report.tags;
 
