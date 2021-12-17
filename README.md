@@ -48,4 +48,4 @@ The extension fetches the analysis report from the RESTful API and renders the J
 ![Demo of extension](img/demo3.png)
 
 ## **Thanks**
-### Earnest thanks to my best partner [Jan Lu](https://github.com/ZhanLu00) for her contributions and suggestions.
+### Special thanks to [Jan Lu](https://github.com/ZhanLu00) for her contributions and suggestions.
