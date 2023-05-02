@@ -9,8 +9,14 @@ Please visit and read the documentation from Google to set up a GCP account and 
 Enable `Google Natural Language API` and `YouTube Data V3 API`. Acquire API key and application credential, and setup environmental variables:
 ```{sh}
 GOOGLE_APPLICATION_CREDENTIALS = your_credentials
-APIKEY = your_apikey
+GCP_APIKEY_EmotionalYouTube = your_apikey
 ```
+
+Tutorials for generating credentials:
+
+- https://cloud.google.com/docs/authentication/application-default-credentials
+
+- https://cloud.google.com/docs/authentication/api-keys
 
 ## **Environment Setup**
 Clone from Github and install all the dependencies:
@@ -32,6 +38,8 @@ Or you can run with arguments in the shell:
 ```{sh}
 python EmotionalYouTube --host 45.125.22.100 --port 52638
 ```
+
+Default address and port for the front- and back- end communication is `localhost:5000`
 
 ## **Extension Setup**
 

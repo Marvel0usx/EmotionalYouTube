@@ -8,7 +8,7 @@ Copying for purposes other than this use is expressly prohibited.
 All forms of distribution of this code, whether as given or with
 any changes, should conform to the open source licence as provided.
 
-> Uplifted to gcloud api 2023.05
+> Uplifted to gcloud api 2023.05, including Google NLP and YouTube V3 apis.
 
 """
 
@@ -30,7 +30,9 @@ YOUTUBE_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
 MAX_NUMBER_COMMENTS = 100
 NUM_RESULTS_PER_REQUEST = 5
+# Tutorial: https://cloud.google.com/docs/authentication/api-keys
 DEVELOPER_KEY = os.environ["GCP_APIKEY_EmotionalYouTube"]
+# Tutorial: https://cloud.google.com/docs/authentication/application-default-credentials
 GOOGLE_APPLICATION_CREDENTIALS = os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
 
 # Sentiment analysis mark scale and magnitude scale
