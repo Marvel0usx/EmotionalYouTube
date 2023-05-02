@@ -1,25 +1,36 @@
 {
     "author": "Harry and Jan",
-    "manifest_version": 2,
+    "manifest_version": 3,
     "name": "Emotional YouTube",
-    "version": "1.0",
-    "description": "Emotional YouTube tells you the attitude of comments!",
+    "version": "1.1",
+    "description": "Emotional YouTube is a powerful Chrome extension designed to perform semantic analysis of YouTube video comments. This extension offers users an enhanced and insightful experience by extracting meaningful information from comments and presenting them in an organized, visually appealing word-cloud.",
 
     "icons": {
-        "128": "images/icon128.png",
-        "48": "images/icon48.png",
-        "16": "images/icon16.png"
+        "128": "favicon/icon128.png",
+        "48": "favicon/icon48.png",
+        "16": "favicon/icon16.png"
     },
 
-    "browser_action": {
-        "default_icon": "images/icon128.png",
-        "default_popup": "popup.html",
-        "default_title": "Emotional YouTube"
+    "action": {
+        "default_popup": "popup.html"        
     },
 
     "permissions": [
-        "tabs", "activeTab"
+        "tabs", "activeTab", "favicon"
     ],
 
-    "web_accessible_resources": ["js/*", "images/*"]
+    "web_accessible_resources": [
+    {
+        "resources": ["js/*"], 
+        "matches":   ["*://*/*"]
+    },
+    {
+        "resources": ["images/*"],
+        "matches":   ["*://*/*"]
+    },
+    {
+        "resources": ["favicon/*"],
+        "matches": ["*://*/*"]
+    }
+    ]
 }
