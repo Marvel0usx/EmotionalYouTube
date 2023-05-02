@@ -8,6 +8,8 @@ Copying for purposes other than this use is expressly prohibited.
 All forms of distribution of this code, whether as given or with
 any changes, should conform to the open source licence as provided.
 
+> Uplifted to gcloud api 2023.05
+
 """
 
 import re
@@ -18,9 +20,10 @@ from typing import Optional, Union, List, Tuple
 from . import datatypes
 from googleapiclient.discovery import build, Resource
 from googleapiclient.errors import HttpError, UnknownApiNameOrVersion
-from google.cloud import language
-from google.cloud.language import enums, types
-from google.cloud.language import LanguageServiceClient
+from google.cloud import language_v1 as language
+# removed in https://github.com/googleapis/python-speech/blob/main/UPGRADING.md#enums-and-types
+# from google.cloud.language import enums, types
+from google.cloud.language_v1 import LanguageServiceClient
 
 # YouTube Data API offsets
 YOUTUBE_SERVICE_NAME = "youtube"
@@ -172,36 +175,38 @@ def _extract_adjective(client: LanguageServiceClient, comments: List[str]) -> st
     #     text = text.encode("utf-8")
 
     # instantiates a plain text document.
-    document = types.Document(
-        content=text.encode("utf-8"),
-        type=enums.Document.Type.PLAIN_TEXT
-    )
+    document = {
+        "type_": language.Document.Type.PLAIN_TEXT,
+        "content": text.encode("utf-8")
+    }
 
     # decompose the text to tokens
-    tokens = client.analyze_syntax(document).tokens
+    tokens = client.analyze_syntax(
+        request={"document": document, "encoding_type": language.EncodingType.UTF8}).tokens
 
     # results are store as list of tokens
     adj_list = u""
     for token in tokens:
         # append all adjectives to result
-        part_of_speech_tag = enums.PartOfSpeech.Tag(token.part_of_speech.tag)
+        part_of_speech_tag = language.PartOfSpeech.Tag(token.part_of_speech.tag)
         if part_of_speech_tag.name == "ADJ":
             adj_list += f"{token.text.content} "
     return adj_list
 
 
-# TODO(harry) update api call
 def _sentiment_analysis(client: LanguageServiceClient, text: str) -> Tuple[str, str]:
     """detects sentiment in the text."""
     length = text.count(" ") + 1
 
     # instantiates a plain text document
-    document = types.Document(
-        content=text,
-        type=enums.Document.Type.PLAIN_TEXT)
+    document = {
+        "type_": language.Document.Type.PLAIN_TEXT,
+        "content": text
+    }
 
     # detects sentiment in the document
-    sentiment = client.analyze_sentiment(document).document_sentiment
+    sentiment = client.analyze_sentiment(
+        request={"document": document}).document_sentiment
     if not sentiment:
         return "", ""
     else:

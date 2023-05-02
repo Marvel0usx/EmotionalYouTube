@@ -13,9 +13,10 @@ APIKEY = your_apikey
 ```
 
 ## **Environment Setup**
-Clone from Github:
+Clone from Github and install all the dependencies:
 ```{sh}
 git clone https://github.com/Marvel0usx/EmotionalYouTube
+pip install -r ./EmotionalYouTube/requirements.txt
 ```
 Or, create a new virtualenv and install the package from TestPyPI:
 ```{sh}
