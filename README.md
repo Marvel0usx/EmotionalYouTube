@@ -10,7 +10,7 @@ Please visit and read the documentation from Google to set up a GCP account and 
 
 Enable `Google Natural Language API` and `YouTube Data V3 API`. Acquire API key and application credential, and setup environmental variables:
 ```{sh}
-GOOGLE_APPLICATION_CREDENTIALS = your_credentials
+GOOGLE_APPLICATION_CREDENTIALS = path_to_your_credentials_json
 GCP_APIKEY_EmotionalYouTube = your_apikey
 ```
 
