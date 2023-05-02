@@ -1,0 +1,10 @@
+SQLAlchemy==1.4.29
+Flask==2.0.2
+Flask-SQLAlchemy==3.0.2
+flask-marshmallow==0.14.0
+marshmallow-sqlalchemy==0.29.0
+Flask-Cors==3.0.10
+wordcloud==1.8.1
+langdetect==1.0.8
+google-cloud-language
+google-api-python-client
