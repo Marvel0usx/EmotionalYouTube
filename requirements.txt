@@ -3,7 +3,7 @@ Flask-SQLAlchemy==2.5.1
 Flask==2.2.5
 flask-marshmallow==0.14.0
 marshmallow-sqlalchemy==0.26.1
-Flask-Cors==3.0.10
+Flask-Cors==5.0.0
 wordcloud==1.9.3
 langdetect==1.0.8
 google-cloud-language
